@@ -1,0 +1,14 @@
+p#notice= notice
+p
+  strong Name:
+  = @item.name
+p
+  strong Price:
+  = @item.price
+p
+  strong Unit:
+  = @item.unit
+= link_to 'Add to Cart', add_to_basket_item_path( @item ), method: :post, data: { confirm: 'Are you sure?' }
+'
+' |
+= link_to 'Back', items_path

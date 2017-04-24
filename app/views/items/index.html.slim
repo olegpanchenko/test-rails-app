@@ -1,0 +1,28 @@
+p#notice
+  = notice
+h1
+  | Items
+table
+  thead
+    tr
+      th
+        | Name
+      th
+        | Price
+      th
+        | Unit
+      th[colspan="3"]
+  tbody
+    - @items.each do |item|
+      tr
+        td
+          = item.name
+        td
+          = item.price
+        td
+          = item.unit
+        td
+          = link_to 'Show', item
+        td
+          = link_to 'Add to Cart', add_to_basket_item_path( item ), method: :post, data: { confirm: 'Are you sure?' }
+

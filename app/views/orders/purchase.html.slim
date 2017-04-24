@@ -1,0 +1,11 @@
+p#notice= notice
+p#warning= warning
+
+- if @basket.order_items.empty?
+  h1 Your Shopping Cart is empty
+- else
+  h1 Shopping Cart
+
+  == render 'form', {order: @basket}
+
+= link_to 'Back', items_path

@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title
+      | TestApp
+    = csrf_meta_tags
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+  body
+    .header.text-right
+      = link_to purchase_orders_path do
+        | (
+        = @basket.order_items.size
+        ' )
+        | Cart
+    = yield

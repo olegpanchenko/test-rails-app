@@ -1,0 +1,97 @@
+= form_for order do |f|
+  = f.hidden_field :status, value: 'paid'
+  - if order.errors.any?
+    #error_explanation
+      h2 = "#{pluralize(order.errors.count, "error")} prohibited this order from being saved:"
+      ul
+        - order.errors.full_messages.each do |message|
+          li = message
+
+  .field
+    table
+      theader
+        tr
+          th
+            | Name
+          th
+            | Price
+          th
+            | Quantity
+          th
+            | Amount
+          th
+            | &nbsp;
+      tbody
+        - order.order_items.each do |order_item|
+          - item = order_item.item
+          tr
+            td
+              = item.name
+            td
+              = Money.new(item.price*100, item.unit).format
+            td
+              = order_item.quantity
+            td
+              = Money.new(item.price*order_item.quantity*100, item.unit).format
+            td
+              = link_to 'Delete', order_item_path( order_item ), method: :delete, data: { confirm: 'Are you sure?' }
+
+      tfoot
+        tr
+          td.text-right colspan=5
+            b
+              | Total Amount (
+              = order.order_items.size
+              '
+              = 'item'.pluralize(order.order_items.size)
+              ' ):
+              = Money.new(order.calc_amount*100).format
+
+  hr
+
+  .field
+    ul
+      - order.discounts.each do |discount|
+        li
+          = discount.promo_code
+          '
+          = link_to 'Delete', remove_from_basket_discount_path( discount ), method: :post, data: { confirm: 'Are you sure?' }
+
+    = label_tag :promo_code
+    = text_field_tag :promo_code
+    = f.submit 'Apply Code'
+
+  hr
+
+  .field
+    = f.label :card_number
+    = f.text_field :card_number
+  .field
+    = f.label :month
+    = f.select :month, 1..12
+  .field
+    = f.label :year
+    = f.select :year, Time.zone.now.year..(Time.zone.now.year + 10)
+  .field
+    = f.label :verification_value
+    = f.text_field :verification_value
+
+  hr
+
+  .field
+    = f.label :email
+    = f.text_field :email
+  .field
+    = f.label :address
+    = f.text_field :address
+  .field
+    = f.label :city
+    = f.text_field :city
+  .field
+    = f.label :state
+    = f.text_field :state
+  .field
+    = f.label :zip
+    = f.text_field :zip
+
+  .actions = f.submit 'Checkout'

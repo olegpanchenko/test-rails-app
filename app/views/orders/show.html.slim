@@ -1,0 +1,44 @@
+p#notice = notice
+
+p
+  strong Customer Email:
+  = @order.email
+table
+  theader
+    tr
+      th
+        | Name
+      th
+        | Price
+      th
+        | Quantity
+      th
+        | Amount
+      th
+        | &nbsp;
+  tbody
+    - @order.order_items.each do |order_item|
+      - item = order_item.item
+      tr
+        td
+          = item.name
+        td
+          = Money.new(item.price*100, item.unit).format
+        td
+          = order_item.quantity
+        td
+          = Money.new(item.price*order_item.quantity*100, item.unit).format
+        td
+          = link_to 'Delete', order_item_path( order_item ), method: :delete, data: { confirm: 'Are you sure?' }
+
+  tfoot
+    tr
+      td.text-right colspan=5
+        b
+          | Total Amount (
+          = @order.order_items.size
+          '
+          = 'item'.pluralize(@order.order_items.size)
+          ' ):
+          = Money.new(@order.calc_amount*100).format
+= link_to 'Back', root_path
