@@ -31,6 +31,24 @@ class Order < ApplicationRecord
   def make_payment
     self.amount = calc_amount
 
+    if self.amount > 0
+      begin
+        res = Stripe::Charge.create({
+          amount: (self.amount*100).round,
+          currency: Money.default_currency.iso_code,
+          source: {
+            number: card_number,
+            cvc: verification_value,
+            exp_month: month,
+            exp_year: year
+          }
+        })
+        self.charge_id = res[:id]
+      rescue => e
+        errors.add( :base, e.message )
+        throw(:abort)
+      end
+    end
   end
 
   def calc_amount
